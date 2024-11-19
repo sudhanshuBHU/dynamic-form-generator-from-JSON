@@ -87,17 +87,6 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
     });
   };
 
-  // const handleChange = (
-  //   e: React.ChangeEvent<
-  //     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  //   >
-  // ) => {
-  //   const { id, value } = e.target;
-
-  //   console.log(id, value);
-
-  //   setFormData((prev) => ({ ...prev, [id]: value }));
-  // };
 
   function handleChange(id: string, value: string): void {
     // console.log(id,value);

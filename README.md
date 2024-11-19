@@ -1,4 +1,4 @@
-# Dynamic Form Generator
+# Dynamic Form Generator From JSON
 
 ## Introduction
 Dynamic Form Generator is a React-based project that allows users to create and manage dynamic forms with ease. This documentation will guide you through the setup instructions and local development process.

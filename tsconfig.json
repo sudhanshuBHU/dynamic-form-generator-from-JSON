@@ -1,4 +1,13 @@
 {
+  "compilerOptions": {
+    "jsx": "react-jsx", // For React 17+ (Recommended)
+    "module": "commonjs",
+    "target": "es5",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
