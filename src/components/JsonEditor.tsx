@@ -19,9 +19,7 @@ const StringToJsonConverter: React.FC<props> = ({
 }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
-  function handleEditorDidMount(
-    editor: monaco.editor.IStandaloneCodeEditor,
-  ) {
+  function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
   }
   // function showValue() {
@@ -68,16 +66,23 @@ const StringToJsonConverter: React.FC<props> = ({
       handleError("Failed to copy JSON", "Failed!");
     }
   }
+
+  // function handleClear() {
+  //   setJsonString('');
+  // }
   return (
     <div className="max-w-3xl mx-auto p-5 bg-white rounded-lg shadow-md dark:bg-neutral-700">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold mb-2 dark:text-white">JSON Object</h2>
-        <button
-          className="mb-2 px-2 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2"
-          onClick={copyToClipboard}
-        >
-          Copy JSON
-        </button>
+        <div>
+          {/* <button className="mb-1 px-2 pb-1 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2" onClick={handleClear}>Clear</button> */}
+          <button
+            className="mb-1 px-2 pb-1 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2"
+            onClick={copyToClipboard}
+          >
+            Copy
+          </button>
+        </div>
       </div>
       <Editor
         height="70vh"
