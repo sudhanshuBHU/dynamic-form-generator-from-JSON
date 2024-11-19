@@ -13,7 +13,7 @@ interface FormData {
 
 interface props {
   jsonObject: ProjectRequirementsSurvey | null;
-  validError: string;
+  validError: string[];
 }
 
 const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
@@ -82,7 +82,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
 
   return (
     <>
-      {!validError && (
+      {validError.length === 0 && (
         <div className="max-w-3xl mx-auto p-5 bg-white shadow-md rounded-md dark:bg-neutral-700 dark:text-white">
           <h1 className="text-2xl font-bold mb-4">
             {jsonObject && jsonObject.formTitle}
@@ -132,7 +132,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
                         className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm bg-white text-black dark:bg-neutral-800 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="">select</option>
-                        {val.options.map((option, optionIndex) => (
+                        {val.options?.map((option, optionIndex) => (
                           <option key={optionIndex} value={option.value}>
                             {option.label}
                           </option>
@@ -141,7 +141,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
                     )}
                     {val.type === "radio" && (
                       <div className="mt-1">
-                        {val.options.map((option, optionIndex) => (
+                        {val.options?.map((option, optionIndex) => (
                           <label
                             key={optionIndex}
                             className="inline-flex items-center mr-4"
@@ -198,9 +198,16 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
           </form>
         </div>
       )}
-      {validError && (
+      {validError.length !== 0 && (
         <div className="text-red-500 text-xl max-w-3xl mx-auto p-5 bg-white shadow-md rounded-md">
-          {validError}
+          {validError.length === 3 && <>
+            <div><span className="text-black">Keyword:</span> {validError[1]}</div>
+            <div><span className="text-black">Path: </span>{validError[0]}</div>
+            <div><span className="text-black">Message:</span> {validError[2]}</div>
+          </>}
+          {validError.length === 1 && <>
+            <div><span className="text-black">Message:</span> {validError[0]}</div>
+          </>}
         </div>
       )}
     </>

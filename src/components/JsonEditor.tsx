@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
-import Editor, { Monaco } from "@monaco-editor/react";
+import Editor from "@monaco-editor/react";
 import { handleSuccess, handleError } from "../utils/alerts";
+import * as monaco from "monaco-editor";
 
 interface props {
   jsonString: string;
@@ -20,7 +21,6 @@ const StringToJsonConverter: React.FC<props> = ({
 
   function handleEditorDidMount(
     editor: monaco.editor.IStandaloneCodeEditor,
-    monaco: Monaco
   ) {
     editorRef.current = editor;
   }
@@ -83,7 +83,9 @@ const StringToJsonConverter: React.FC<props> = ({
         height="70vh"
         defaultLanguage="json" // Set the default language to JSON
         defaultValue={jsonString}
-        onChange={() => setJsonString(editorRef.current.getValue())}
+        onChange={() => {
+          if (editorRef.current) setJsonString(editorRef.current.getValue());
+        }}
         onMount={handleEditorDidMount}
         // theme='vs-dark' // Use the Abyss theme
         theme={dark ? "vs-dark" : "abyss"} // Use the Abyss theme

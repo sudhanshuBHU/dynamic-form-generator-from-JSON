@@ -6,39 +6,42 @@ import { ProjectRequirementsSurvey } from "../utils/schema";
 import { givenSchema } from "../utils/schema";
 import { Validate } from "../utils/validator";
 
+
 interface props {
   dark: boolean;
   setDark: (arg0: boolean) => void;
 }
+
 const LeftRightDivs: React.FC<props> = ({ dark, setDark }) => {
   const [jsonString, setJsonString] = useState(givenSchema);
 
   const [jsonObject, setJsonObject] =
     useState<ProjectRequirementsSurvey | null>(null);
   const [err, setErr] = useState<string>("");
-  const [validError, setValidError] = useState<any>();
+  const [validError, setValidError] = useState<string[]>([]);
   useEffect(() => {
     try {
       const data = JSON.parse(jsonString);
       setJsonObject(data);
-      const res = Validate(data);
-      if (res.valid) {
+      const res = Validate(data);      
+      // console.log(res);
+      if (res.length === 0) {
         // true
-        setValidError("");
+        setValidError([]);
       } else {
         // false
-        setValidError(res.errors[0]);
+        setValidError(res);
       }
       setErr("");
     } catch (err) {
       //   console.error(error);
       setJsonObject(null);
       if (err instanceof SyntaxError) {
-        setValidError(`Invalid JSON string: ${err.message}`);
+        setValidError([`Invalid JSON string: ${err.message}`]);
         setErr(`Invalid JSON string: ${err.message}`);
       } else {
         setErr("An unexpected error occurred");
-        setValidError("An unexpected error occurred");
+        setValidError(["An unexpected error occurred"]);
       }
     }
   }, [jsonString]);

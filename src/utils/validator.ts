@@ -45,19 +45,20 @@ const validate = ajv.compile(schema);
 // };
 
 
-export function Validate(JsonData : ProjectRequirementsSurvey) {
+export function Validate(JsonData : ProjectRequirementsSurvey): any[] {
   const valid = validate(JsonData);
+  const stringArr: any[] = [];
   if (!valid) {
-    // console.log("Validation Errors:", validate.errors);
-    return {
-      valid: false,
-      errors: validate.errors
-    };
+    validate.errors?.forEach(val=>{
+      // console.log(val.instancePath);
+      stringArr.push(val.instancePath);
+      stringArr.push(val.keyword);
+      stringArr.push(val.message);
+    });
+    return stringArr;
   } else {
     // console.log("Validation passed!");
-    return {
-      valid: true,
-      errors: ''
-    };
+    return [];
+    ;
   }
 }

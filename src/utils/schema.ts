@@ -1,82 +1,82 @@
 import { JSONSchemaType } from 'ajv';
-
+// import { ErrorObject } from "ajv";
 
 export interface FormFieldOption {
-    value: string;
-    label: string;
+  value: string;
+  label: string;
 }
 
 export interface FormField {
-    id: string;
-    type: "text" | "email" | "select" | "radio" | "textarea";
-    label: string;
-    required: boolean;
-    placeholder?: string; // Optional, as not all fields have a placeholder
-    pattern?: string; // Optional, only for fields like email
-    validation?: {
-        message: string;
-    };
-    options?: FormFieldOption[]; // Optional, only for select and radio types
+  id: "name" | "email" | "companySize" | "industry" | "timeline" | "comments";
+  type: "text" | "email" | "select" | "radio" | "textarea";
+  label: string;
+  required: boolean;
+  placeholder?: string; // Optional, as not all fields have a placeholder
+  pattern?: string; // Optional, only for fields like email
+  validation?: {
+    message: string;
+  };
+  options?: FormFieldOption[]; // Optional, only for select and radio types
 }
 
 export interface ProjectRequirementsSurvey {
-    formTitle: string;
-    formDescription: string;
-    fields: FormField[];
+  formTitle: string;
+  formDescription: string;
+  fields: FormField[];
 }
 
 // Define the JSON schema
 export const schema: JSONSchemaType<ProjectRequirementsSurvey> = {
-    $schema: "http://json-schema.org/draft-07/schema#",
-    type: "object",
-    properties: {
-      formTitle: { type: "string" },
-      formDescription: { type: "string" },
-      fields: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            id: { type: "string" },
-            type: {
-              type: "string",
-              enum: ["text", "email", "select", "radio", "textarea"]
+  $schema: "http://json-schema.org/draft-07/schema#",
+  type: "object",
+  properties: {
+    formTitle: { type: "string" },
+    formDescription: { type: "string" },
+    fields: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          type: {
+            type: "string",
+            enum: ["text", "email", "select", "radio", "textarea"]
+          },
+          label: { type: "string" },
+          required: { type: "boolean" },
+          placeholder: { type: "string", nullable: true },
+          pattern: { type: "string", nullable: true },
+          validation: {
+            type: "object",
+            properties: {
+              message: { type: "string" }
             },
-            label: { type: "string" },
-            required: { type: "boolean" },
-            placeholder: { type: "string", nullable: true },
-            pattern: { type: "string", nullable: true },
-            validation: {
+            required: ["message"],
+            nullable: true
+          },
+          options: {
+            type: "array",
+            items: {
               type: "object",
               properties: {
-                message: { type: "string" }
+                value: { type: "string" },
+                label: { type: "string" }
               },
-              required: ["message"],
-              nullable: true
+              required: ["value", "label"]
             },
-            options: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  value: { type: "string" },
-                  label: { type: "string" }
-                },
-                required: ["value", "label"]
-              },
-              nullable: true
-            }
-          },
-          required: ["id", "type", "label", "required"]
-        }
+            nullable: true
+          }
+        },
+        required: ["id", "type", "label", "required"]
       }
-    },
-    required: ["formTitle", "formDescription", "fields"]
-  };
+    }
+  },
+  required: ["formTitle", "formDescription", "fields"]
+};
 
 
-export const givenSchema = 
-`{
+export const givenSchema =
+  `{
   "formTitle": "Project Requirements Survey",
   "formDescription": "Please fill out this survey about your project needs",
   "fields": [
