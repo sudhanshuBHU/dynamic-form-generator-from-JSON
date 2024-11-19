@@ -24,9 +24,9 @@ const Navbar :React.FC<prop> = ({setDark, dark}) => {
             </h1>
           </div>
           <div className="hidden md:flex space-x-6">
-            <button className='bg-neutral-900 rounded-full h-6 w-12 text-white dark:text-black dark:bg-white'
+            <button className='bg-neutral-900 rounded-full h-7 w-14 text-white dark:text-black dark:bg-white'
             onClick={()=>setDark(!dark)}
-            >{dark ? 'LIT' : 'DRK'}</button>
+            >{dark ? 'Light' : 'Dark'}</button>
             <a
               href="#"
               className="text-gray-600 hover:text-blue-600 transition duration-300 dark:text-white"
@@ -73,29 +73,32 @@ const Navbar :React.FC<prop> = ({setDark, dark}) => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white shadow-md">
+        <div className="md:hidden bg-white shadow-md dark:bg-neutral-800">
           <div className="flex flex-col space-y-4 p-4">
             <a
               href="#"
-              className="text-gray-600 hover:text-blue-600 transition duration-300"
+              className="text-gray-600 hover:text-blue-600 transition duration-300 dark:text-white"
               onClick={toggleMenu} // Close the menu when clicking a link
             >
               Home
             </a>
             <a
               href="#"
-              className="text-gray-600 hover:text-blue-600 transition duration-300"
+              className="text-gray-600 hover:text-blue-600 transition duration-300 dark:text-white"
               onClick={toggleMenu}
             >
               About
             </a>
             <a
               href="#"
-              className="text-gray-600 hover:text-blue-600 transition duration-300"
+              className="text-gray-600 hover:text-blue-600 transition duration-300 dark:text-white"
               onClick={toggleMenu}
             >
               Contact
             </a>
+            <button className='bg-neutral-900 rounded-full h-8 w-14 text-white dark:text-black dark:bg-white'
+            onClick={()=>setDark(!dark)}
+            >{dark ? 'Light' : 'Dark'}</button>
           </div>
         </div>
       )}

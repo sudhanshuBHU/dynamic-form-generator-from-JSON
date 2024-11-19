@@ -76,7 +76,7 @@ const StringToJsonConverter: React.FC<props> = ({
           className="mb-2 px-2 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2"
           onClick={copyToClipboard}
         >
-          Copy Form JSON
+          Copy JSON
         </button>
       </div>
       <Editor

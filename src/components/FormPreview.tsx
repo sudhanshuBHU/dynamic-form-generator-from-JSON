@@ -42,7 +42,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
     link.click();
     console.log("Form Data Submitted:", formData);
     handleSuccess("Downloading...", "Done!");
-    reset();
+    // reset();
   };
 
   const reset = () => {
@@ -77,7 +77,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
     e.preventDefault();
     console.log("Form Data Submitted:", formData);
     handleSuccess("Submitted", "Done!");
-    reset();
+    // reset();
   };
 
   return (
