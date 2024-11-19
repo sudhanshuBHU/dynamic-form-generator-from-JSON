@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ProjectRequirementsSurvey } from "../utils/schema";
-import { handleSuccess } from "../utils/alerts";
+import { handleError, handleSuccess } from "../utils/alerts";
 
 interface FormData {
   name: string;
@@ -32,7 +32,38 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
     comments: "",
   });
 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const validateForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {};
+    // formData.forEach((val) => {
+    //   // Check if the field is required and if its value is missing or empty
+    //   if (val.required && !val.value) {
+    //     newErrors[val.id] = `${val.label} is required`;
+    //   }
+    // });
+    Object.keys(formData).forEach((val) => {
+      // Check if the field is required and if its value is missing or empty
+      if (
+        !formData[val as keyof FormData] &&
+        jsonObject?.fields.find((field) => field.id === val)?.required
+      ) {
+        newErrors[val] = `${
+          jsonObject?.fields.find((field) => field.id === val)?.label
+        } is required`;
+      }
+    });
+    setErrors(newErrors);
+    console.log(newErrors);
+
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+
   const handleDownload = () => {
+    if (!validateForm()) {
+      handleError("Error", "Please fill all the required fields");
+      return;
+    }
+    setErrors({});
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
       JSON.stringify(formData, null, 2)
     )}`;
@@ -75,6 +106,11 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) {
+      handleError("Error", "Please fill all the required fields");
+      return;
+    }
+    setErrors({});
     console.log("Form Data Submitted:", formData);
     handleSuccess("Submitted", "Done!");
     // reset();
@@ -102,66 +138,100 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
                       {val.label}
                     </label>
                     {val.type === "text" && (
-                      <input
-                        type={val.type}
-                        id={val.id}
-                        value={formData[val.id] || ""} // Use the specific field value
-                        onChange={(e) => handleChange(val.id, e.target.value)}
-                        placeholder={val.placeholder}
-                        required={val.required} // Set required as a boolean
-                        className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:text-neutral-900"
-                      />
+                      <>
+                        <input
+                          type={val.type}
+                          id={val.id}
+                          value={formData[val.id] || ""} // Use the specific field value
+                          onChange={(e) => handleChange(val.id, e.target.value)}
+                          placeholder={val.placeholder}
+                          required={val.required} // Set required as a boolean
+                          className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:text-neutral-900"
+                        />
+                        {errors[val.id] && (
+                          <p className="text-red-500 text-sm">
+                            {errors[val.id]}
+                          </p>
+                        )}
+                      </>
                     )}
+
                     {val.type === "email" && (
-                      <input
-                        type={val.type}
-                        id={val.id}
-                        value={formData[val.id] || ""}
-                        onChange={(e) => handleChange(val.id, e.target.value)}
-                        placeholder={val.placeholder}
-                        required={val.required}
-                        className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:text-neutral-900"
-                      />
+                      <>
+                        <input
+                          type={val.type}
+                          id={val.id}
+                          value={formData[val.id] || ""}
+                          onChange={(e) => handleChange(val.id, e.target.value)}
+                          placeholder={val.placeholder}
+                          required={val.required}
+                          className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:text-neutral-900"
+                        />
+                        {errors[val.id] && (
+                          <p className="text-red-500 text-sm">
+                            {errors[val.id]}
+                          </p>
+                        )}
+                      </>
                     )}
+
                     {val.type === "select" && (
-                      <select
-                        id={val.id}
-                        value={formData[val.id] || ""}
-                        onChange={(e) => handleChange(val.id, e.target.value)}
-                        required={val.required}
-                        className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm bg-white text-black dark:bg-neutral-800 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="">select</option>
-                        {val.options?.map((option, optionIndex) => (
-                          <option key={optionIndex} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                      <>
+                        <select
+                          id={val.id}
+                          value={formData[val.id] || ""}
+                          onChange={(e) => handleChange(val.id, e.target.value)}
+                          required={val.required}
+                          className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm bg-white text-black dark:bg-neutral-800 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">select</option>
+                          {val.options?.map((option, optionIndex) => (
+                            <option key={optionIndex} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        {errors[val.id] && (
+                          <p className="text-red-500 text-sm">
+                            {errors[val.id]}
+                          </p>
+                        )}
+                      </>
                     )}
+
                     {val.type === "radio" && (
-                      <div className="mt-1">
-                        {val.options?.map((option, optionIndex) => (
-                          <label
-                            key={optionIndex}
-                            className="inline-flex items-center mr-4"
-                          >
-                            <input
-                              type="radio"
-                              id={option.label}
-                              name={val.id}
-                              value={option.value}
-                              onChange={(e) =>
-                                handleChange(val.id, e.target.value)
-                              }
-                              required={val.required}
-                              className="form-radio text-blue-600"
-                            />
-                            <span className="ml-2">{option.label}</span>
-                          </label>
-                        ))}
-                      </div>
+                      <>
+                        <>
+                          <div className="mt-1">
+                            {val.options?.map((option, optionIndex) => (
+                              <label
+                                key={optionIndex}
+                                className="inline-flex items-center mr-4"
+                              >
+                                <input
+                                  type="radio"
+                                  id={option.label}
+                                  name={val.id}
+                                  value={option.value}
+                                  onChange={(e) =>
+                                    handleChange(val.id, e.target.value)
+                                  }
+                                  required={val.required}
+                                  className="form-radio text-blue-600"
+                                />
+                                <span className="ml-2">{option.label}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </>
+                        {errors[val.id] && (
+                          <p className="text-red-500 text-sm">
+                            {errors[val.id]}
+                          </p>
+                        )}
+                      </>
                     )}
+
                     {val.type === "textarea" && (
                       <textarea
                         id={val.id}
@@ -200,14 +270,27 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       )}
       {validError.length !== 0 && (
         <div className="text-red-500 text-xl max-w-3xl mx-auto p-5 bg-white shadow-md rounded-md">
-          {validError.length === 3 && <>
-            <div><span className="text-black">Keyword:</span> {validError[1]}</div>
-            <div><span className="text-black">Path: </span>{validError[0]}</div>
-            <div><span className="text-black">Message:</span> {validError[2]}</div>
-          </>}
-          {validError.length === 1 && <>
-            <div><span className="text-black">Message:</span> {validError[0]}</div>
-          </>}
+          {validError.length === 3 && (
+            <>
+              <div>
+                <span className="text-black">Keyword:</span> {validError[1]}
+              </div>
+              <div>
+                <span className="text-black">Path: </span>
+                {validError[0]}
+              </div>
+              <div>
+                <span className="text-black">Message:</span> {validError[2]}
+              </div>
+            </>
+          )}
+          {validError.length === 1 && (
+            <>
+              <div>
+                <span className="text-black">Message:</span> {validError[0]}
+              </div>
+            </>
+          )}
         </div>
       )}
     </>
