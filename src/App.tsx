@@ -4,6 +4,7 @@ import Landing from "./components/Landing";
 
 function App() {
   const [dark, setDark] = useState(false);
+  
   useEffect(() => {
     const dark_local = localStorage.getItem("dark");
     if (dark_local === "true") {
@@ -21,6 +22,7 @@ function App() {
       localStorage.setItem("dark", "false");
     }
   }, [dark]);
+
   return (
     <div className={`${dark && "dark"}`}>
       <div className="min-h-screen bg-gray-100 dark:bg-neutral-700">

@@ -9,6 +9,9 @@ interface FormData {
   industry: string;
   timeline: string;
   comments?: string;
+  // [key: string]: any;
+  formDescription: string;
+  formTitle: string;
 }
 
 interface props {
@@ -30,7 +33,11 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
     industry: "",
     timeline: "",
     comments: "",
+    formDescription: "",
+    formTitle: "",
   });
+
+  const [errorEmail, setErrorEmail] = useState<boolean>(false);
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const validateForm = (): boolean => {
@@ -53,8 +60,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       }
     });
     setErrors(newErrors);
-    console.log(newErrors);
-
+    // console.log(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
@@ -63,15 +69,28 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       handleError("Error", "Please fill all the required fields");
       return;
     }
+    if (errorEmail) {
+      handleError("Error", "Invalid Email");
+      return;
+    }
     setErrors({});
+    const downloadFormData = { ...formData };
+    if (jsonObject) {
+      downloadFormData["formTitle"] = jsonObject.formTitle;
+    }
+    if (jsonObject) {
+      downloadFormData["formDescription"] = jsonObject.formDescription;
+    }
+    console.log("Form Data Submitted->:", downloadFormData);
+
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(formData, null, 2)
+      JSON.stringify(downloadFormData, null, 2)
     )}`;
     const link = document.createElement("a");
     link.href = jsonString;
     link.download = "JsonFormData.json";
     link.click();
-    console.log("Form Data Submitted:", formData);
+    console.log("Form Data Submitted:", downloadFormData);
     handleSuccess("Downloading...", "Done!");
     // reset();
   };
@@ -84,9 +103,10 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       industry: "",
       timeline: "",
       comments: "",
+      formDescription: "",
+      formTitle: "",
     });
   };
-
 
   function handleChange(id: string, value: string): void {
     // console.log(id,value);
@@ -95,6 +115,10 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (errorEmail) {
+      handleError("Error", "Invalid Email");
+      return;
+    }
     if (!validateForm()) {
       handleError("Error", "Please fill all the required fields");
       return;
@@ -103,6 +127,11 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
     console.log("Form Data Submitted:", formData);
     handleSuccess("Submitted", "Done!");
     // reset();
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   return (
@@ -151,11 +180,18 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
                           type={val.type}
                           id={val.id}
                           value={formData[val.id] || ""}
-                          onChange={(e) => handleChange(val.id, e.target.value)}
+                          onChange={(e) => {
+                            handleChange(val.id, e.target.value);
+                            // validateEmail(e.target.value)
+                            setErrorEmail(!validateEmail(e.target.value));
+                          }}
                           placeholder={val.placeholder}
                           required={val.required}
                           className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:text-neutral-900"
                         />
+                        {errorEmail && (
+                          <p className="text-red-500 text-sm">Invalid Email</p>
+                        )}
                         {errors[val.id] && (
                           <p className="text-red-500 text-sm">
                             {errors[val.id]}
@@ -234,12 +270,14 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
                   </div>
                 );
               })}
+            {/* submit button */}
             <button
               type="submit"
               className="mt-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2"
             >
               Submit
             </button>
+            {/* download button */}
             <button
               type="button"
               className="mt-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2"
@@ -247,6 +285,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
             >
               Download Form JSON
             </button>
+            {/* reset button */}
             <button
               type="button"
               className="mt-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
@@ -257,6 +296,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
           </form>
         </div>
       )}
+      {/* error handling message */}
       {validError.length !== 0 && (
         <div className="text-red-500 text-xl max-w-3xl mx-auto p-5 bg-white shadow-md rounded-md">
           {validError.length === 3 && (
