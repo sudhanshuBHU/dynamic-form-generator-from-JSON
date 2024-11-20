@@ -64,6 +64,15 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
+  const helper = (data: FormData): FormData => {
+    if (jsonObject) {
+      data["formTitle"] = jsonObject.formTitle;
+    }
+    if (jsonObject) {
+      data["formDescription"] = jsonObject.formDescription;
+    }
+    return data;
+  };
   const handleDownload = () => {
     if (!validateForm()) {
       handleError("Error", "Please fill all the required fields");
@@ -74,14 +83,8 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       return;
     }
     setErrors({});
-    const downloadFormData = { ...formData };
-    if (jsonObject) {
-      downloadFormData["formTitle"] = jsonObject.formTitle;
-    }
-    if (jsonObject) {
-      downloadFormData["formDescription"] = jsonObject.formDescription;
-    }
-    console.log("Form Data Submitted->:", downloadFormData);
+    const downloadFormData = helper(formData);
+    // console.log("Form Data Submitted->:", downloadFormData);
 
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
       JSON.stringify(downloadFormData, null, 2)
@@ -125,7 +128,8 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       return;
     }
     setErrors({});
-    console.log("Form Data Submitted:", formData);
+    const res = helper(formData);
+    console.log("Form Data Submitted:", res);
     handleSuccess("Submitted", "Done!");
     // reset();
   };
