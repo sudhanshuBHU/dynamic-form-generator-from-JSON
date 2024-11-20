@@ -67,15 +67,32 @@ const StringToJsonConverter: React.FC<props> = ({
     }
   }
 
-  // function handleClear() {
-  //   setJsonString('');
-  // }
+  function handleDefault() {
+    setJsonString(`{
+      "formTitle": "Project Requirements Survey",
+      "formDescription": "Please fill out this survey about your project needs",
+      "fields": [
+          {
+          "id": "name",
+          "type": "text",
+          "label": "Full Name",
+          "required": true,
+          "placeholder": "Enter your full name"
+          }
+        ]
+      }`);
+  }
   return (
     <div className="max-w-3xl mx-auto p-5 bg-white rounded-lg shadow-md dark:bg-neutral-700">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold mb-2 dark:text-white">JSON Object</h2>
         <div>
-          {/* <button className="mb-1 px-2 pb-1 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2" onClick={handleClear}>Clear</button> */}
+          <button
+            className="mb-1 px-2 pb-1 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-1"
+            onClick={handleDefault}
+          >
+            Reset
+          </button>
           <button
             className="mb-1 px-2 pb-1 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-300 mr-2"
             onClick={copyToClipboard}
@@ -88,6 +105,7 @@ const StringToJsonConverter: React.FC<props> = ({
         height="70vh"
         defaultLanguage="json" // Set the default language to JSON
         defaultValue={jsonString}
+        value={jsonString}
         onChange={() => {
           if (editorRef.current) setJsonString(editorRef.current.getValue());
         }}
