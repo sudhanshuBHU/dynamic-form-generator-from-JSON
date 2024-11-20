@@ -106,6 +106,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       formDescription: "",
       formTitle: "",
     });
+    setErrors({});
   };
 
   function handleChange(id: string, value: string): void {
