@@ -103,7 +103,7 @@ const FormPreview: React.FC<props> = ({ jsonObject, validError }) => {
       name: "",
       email: "",
       companySize: "",
-      industry: "",
+      industry: formData["industry"],
       timeline: "",
       comments: "",
       formDescription: "",
